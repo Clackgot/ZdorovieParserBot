@@ -287,8 +287,36 @@ namespace ParserNews
                 Console.WriteLine(news);
             }
 
-            Console.WriteLine("Нажмите любую клавишу");
+            // bot is working...
+
+            StupidBot bot = new StupidBot();
+
+            foreach (var news in AllNews)
+            {
+                bot.SendMessage(news.Title);
+            }
+
             Console.ReadKey();
+
+        }
+
+        private static void medicalnewstoday()
+        {
+            Medicalnewstoday medicalnewstoday = new Medicalnewstoday();
+            var result = medicalnewstoday.GetAllNewsAsync().Result;
+            foreach (var news in result)
+            {
+                Console.WriteLine(news);
+            }
+        }
+        private static void medscape()
+        {
+            MedscapeService medscape = new MedscapeService();
+            var result = medscape.GetAllNewsAsync().Result;
+            foreach (var news in result)
+            {
+                Console.WriteLine(news);
+            }
         }
     }
 }
