@@ -193,10 +193,14 @@ namespace ParserNews
 
             // bot is working...
 
+            StupidBot bot = new StupidBot();
+
             foreach (var news in AllNews)
             {
-                StupidBot bot = new StupidBot(news.Title);
+                bot.SendMessage(news.Title);
             }
+
+            Console.ReadKey();
 
         }
 

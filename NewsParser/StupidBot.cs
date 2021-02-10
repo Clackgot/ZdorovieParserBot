@@ -11,12 +11,18 @@ namespace ParserNews
 
         private string UsernameChannel = "newstestbot1";
 
-        public StupidBot(string text)
-        {
-            HttpClient client = new HttpClient();
+        private string message = "";
 
+        public StupidBot()
+        {
+
+        }
+
+        public void SendMessage(string text)
+        {
             string message = "https://api.telegram.org/bot" + token + "/sendMessage?chat_id=@" + UsernameChannel + "&text=" + text;
 
+            HttpClient client = new HttpClient();
             client.GetAsync(message);
         }
         
