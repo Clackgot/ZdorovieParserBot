@@ -1,8 +1,11 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Io;
+using CodeHollow.FeedReader;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -20,7 +23,18 @@ namespace ParserNews
             Url = url;
         }
         public string Title { get; set; }
-        public string Teaser { get; set; }
+
+        public const int teaserMaxLength = 100;
+        private string cutText(string text)
+        {
+            var tempText = text;
+            var temp = tempText.Substring(0, Math.Min(tempText.Length, teaserMaxLength - 3)) + "...";
+            return temp;
+        }
+        private string teaser;
+        public string Teaser { get { return teaser; } set { teaser = cutText(value); } }
+
+
         public Url Url { get; set; }
 
         public override string ToString()
@@ -83,7 +97,7 @@ namespace ParserNews
         public abstract Task<IEnumerable<News>> GetAllNewsAsync();
     }
 
-    public class MedscapeService : NewsService
+    public class Medscape : NewsService
     {
         protected override string BaseUrl => "https://www.medscape.com/index/list_13470_";
 
@@ -128,7 +142,7 @@ namespace ParserNews
     public class Medicalnewstoday : NewsService
     {
         protected override string BaseUrl => "https://www.medicalnewstoday.com";
-        private int tiserMaxLength = 100;
+
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             List<Task<IDocument>> documents = new List<Task<IDocument>>();
@@ -156,9 +170,6 @@ namespace ParserNews
                 {
                     var title = document.QuerySelector("div.css-z468a2 h1").TextContent;
                     var teaser = document.QuerySelector("article div p").TextContent;
-                    bool needPoints = tiserMaxLength < teaser.Length;
-                    teaser = teaser.Substring(0, Math.Min(teaser.Length, tiserMaxLength-3));
-                    if(needPoints) teaser += "...";
                     var url = document.Url;
                     allNews.Add(new News(title, teaser, new Url(url)));
                 }
@@ -170,14 +181,77 @@ namespace ParserNews
         }
     }
 
+    public class NewsMedical : NewsService
+    {
+        protected override string BaseUrl => "https://www.news-medical.net/medical/news?page=";
+
+        private async Task<List<IDocument>> getPages()
+        {
+            List<IDocument> documents = new List<IDocument>();
+
+            for (int i = 1; i < 5; i++)
+            {
+                string url = BaseUrl + i.ToString();
+                var document = context.OpenAsync(url);
+
+                string date = DateTime.Now.ToString("dd MMM yyyy", CultureInfo.GetCultureInfo("en-us"));
+                bool exsistTodayNews = false;
+                foreach (var item in document.Result.QuerySelectorAll("span.article-meta-date"))
+                {
+
+                    if (item.TextContent.Trim() == date)
+                    {
+                        exsistTodayNews = true;
+                        break;
+                    }
+                    
+                }
+                if (exsistTodayNews) documents.Add(await document);
+                else return documents;
+            }
+            return documents;
+        }
+
+        public override async Task<IEnumerable<News>> GetAllNewsAsync()
+        {
+            var pages = await getPages();
+            foreach (var page in pages)
+            {
+                string baseUrl = "https://www.news-medical.net/medical";
+                var childNodesCount = page.QuerySelector("div.publishables-list-wrap").ChildElementCount-1;
+                for (int i = 1; i < childNodesCount; i+=2)
+                {
+                    string date = DateTime.Now.ToString("dd MMM yyyy", CultureInfo.GetCultureInfo("en-us"));
+                    var tagDate = page.QuerySelector("div.publishables-list-wrap").Children[i].QuerySelector("span.article-meta-date").TextContent.Trim();
+                    if(tagDate == date)
+                    {
+                        var title = page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("h3 a").TextContent.Trim();
+                        var teaser = page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("p.hidden-xs").TextContent.Trim();
+                        var url = baseUrl + page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("a").GetAttribute("href");
+                        allNews.Add(new News(title, teaser, new Url(url)));
+                    }
+                }
+            }
+            
+            return allNews;
+        }
+    }
+
+
     class Program
     {
         static void Main(string[] args)
         {
+            Run();
+        }
+
+        private static void Run()
+        {
             List<News> AllNews = new List<News>();
             List<INewsService> newsServices = new List<INewsService>();
-            newsServices.Add(new Medicalnewstoday());
-            newsServices.Add(new MedscapeService());
+            newsServices.Add(new Medicalnewstoday());//https://www.medicalnewstoday.com
+            newsServices.Add(new Medscape()); //https://www.medscape.com/index/list_13470
+            newsServices.Add(new NewsMedical());//https://www.news-medical.net/syndication.axd?news=lifesciences
 
             foreach (var service in newsServices)
             {
@@ -191,36 +265,7 @@ namespace ParserNews
                 Console.WriteLine(news);
             }
 
-            // bot is working...
-
-            StupidBot bot = new StupidBot();
-
-            foreach (var news in AllNews)
-            {
-                bot.SendMessage(news.Title);
-            }
-
-            Console.ReadKey();
-
-        }
-
-        private static void medicalnewstoday()
-        {
-            Medicalnewstoday medicalnewstoday = new Medicalnewstoday();
-            var result = medicalnewstoday.GetAllNewsAsync().Result;
-            foreach (var news in result)
-            {
-                Console.WriteLine(news);
-            }
-        }
-        private static void medscape()
-        {
-            MedscapeService medscape = new MedscapeService();
-            var result = medscape.GetAllNewsAsync().Result;
-            foreach (var news in result)
-            {
-                Console.WriteLine(news);
-            }
+            Console.ReadLine();
         }
     }
 }
