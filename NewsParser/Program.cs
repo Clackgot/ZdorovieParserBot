@@ -190,6 +190,14 @@ namespace ParserNews
             {
                 Console.WriteLine(news);
             }
+
+            // bot is working...
+
+            foreach (var news in AllNews)
+            {
+                StupidBot bot = new StupidBot(news.Title);
+            }
+
         }
 
         private static void medicalnewstoday()
