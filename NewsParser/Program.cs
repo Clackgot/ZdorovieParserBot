@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ParserNews
 {
@@ -238,6 +239,26 @@ namespace ParserNews
     }
 
 
+    public class Bmj : NewsService
+    {
+        protected override string BaseUrl => "http://feeds.bmj.com/bmj/recent";
+
+        public override async Task<IEnumerable<News>> GetAllNewsAsync()
+        {
+            var page = await context.OpenAsync("http://feeds.bmj.com/bmj/recent");
+            var result = await FeedReader.ReadAsync("http://feeds.bmj.com/bmj/recent");
+            XName name = XName.Get("title", "http://feeds.bmj.com/bmj/recent");
+            for (int i = 0; i < result.Items.Count; i++)
+            {
+                var title = result.Items.AsEnumerable().ToArray()[i].Title;
+                var teaser = result.Items.AsEnumerable().ToArray()[0].Description.Split(@"<div")[0];
+                var url = result.Items.AsEnumerable().ToArray()[i].Link;
+                allNews.Add(new News(title, teaser, new Url(url)));
+            }
+            return allNews;
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -252,6 +273,7 @@ namespace ParserNews
             newsServices.Add(new Medicalnewstoday());//https://www.medicalnewstoday.com
             newsServices.Add(new Medscape()); //https://www.medscape.com/index/list_13470
             newsServices.Add(new NewsMedical());//https://www.news-medical.net/syndication.axd?news=lifesciences
+            newsServices.Add(new Bmj());//
 
             foreach (var service in newsServices)
             {
@@ -265,7 +287,8 @@ namespace ParserNews
                 Console.WriteLine(news);
             }
 
-            Console.ReadLine();
+            Console.WriteLine("Нажмите любую клавишу");
+            Console.ReadKey();
         }
     }
 }
