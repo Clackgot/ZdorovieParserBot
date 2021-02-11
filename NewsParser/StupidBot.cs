@@ -28,4 +28,3 @@ namespace ParserNews
         
     }
 }
-https://api.telegram.org/bot1656601649:AAG1d5BQ8GCdkt5QP6PRKxriPFSewixNKFQ/sendMessage?chat_id=@newstestbot1&text=" + text;

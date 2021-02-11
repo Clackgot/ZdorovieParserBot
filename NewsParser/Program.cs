@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace ParserNews
 {
@@ -94,17 +97,49 @@ namespace ParserNews
         {
         }
     }
+
+    class Bot
+    {
+        public string token = "1656601649:AAG1d5BQ8GCdkt5QP6PRKxriPFSewixNKFQ";
+
+        public string channelName = "@newstestbot1";
+
+
+        private TelegramBotClient bot;
+        public Bot(string token)
+        {
+            this.token = token;
+            bot = new TelegramBotClient(this.token);
+        }
+        public Bot()
+        {
+            bot = new TelegramBotClient(this.token);
+        }
+        public async Task<Message> SendNews(News news)
+        {
+            string message = $"<b>{news.Title}</b>" +
+                $"\n\n" +
+                $"{news.Teaser}" +
+                $"\n\n" +
+                $"<a href=\"{news.Url.Href}\">Источник</a>";
+            var response = await bot.SendTextMessageAsync(new ChatId(channelName), message, Telegram.Bot.Types.Enums.ParseMode.Html, true);
+            Thread.Sleep(3000);
+            return response;
+        }
+    }
+    
     class Program
     {
         static void Main(string[] args)
         {
-            //var parser = ParserFactory.Parser();
-            //parser.Parse().Wait();
-            //ChannelUpdater updater = new ChannelUpdater();
-            //updater.Update(parser.News);
-            StupidBot bot = new StupidBot();
+            var parser = ParserFactory.Parser();
+            parser.Parse().Wait();
+            Bot bot = new Bot();
+            foreach (var newsItem in parser.News)
+            {
+                bot.SendNews(newsItem).Wait();
 
-            bot.SendMessage("")
+            }
         }
 
 
