@@ -25,7 +25,7 @@ namespace ParserNews
         [XmlAttribute("Title")]
         public string Title { get; set; }
 
-        public const int teaserMaxLength = 100;
+        public const int teaserMaxLength = 200;
         private string cutText(string text)
         {
             var tempText = text;
