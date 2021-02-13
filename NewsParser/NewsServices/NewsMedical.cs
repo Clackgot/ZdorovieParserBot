@@ -58,7 +58,7 @@ namespace ParserNews
                         var title = page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("h3 a").TextContent.Trim();
                         var teaser = page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("p.hidden-xs").TextContent.Trim();
                         var url = baseUrl + page.QuerySelector("div.publishables-list-wrap").Children[i - 1].QuerySelector("a").GetAttribute("href");
-                        allNews.Add(new News(title, teaser, new Url(url)));
+                        allNews.Add(new News(title, teaser, url));
                     }
                 }
             }

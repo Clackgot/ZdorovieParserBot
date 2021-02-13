@@ -41,7 +41,7 @@ namespace ParserNews
                     
                     if (getDate(date) == DateTime.Today)
                     {
-                        allNews.Add(new News(title, teaser, new Url(newsUrl)));
+                        allNews.Add(new News(title, teaser, newsUrl));
                         validPage = true;
                     }
                 }

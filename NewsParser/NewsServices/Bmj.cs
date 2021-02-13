@@ -23,7 +23,7 @@ namespace ParserNews
                 var title = result.Items.AsEnumerable().ToArray()[i].Title;
                 var teaser = result.Items.AsEnumerable().ToArray()[0].Description.Split(@"<div")[0];
                 var url = result.Items.AsEnumerable().ToArray()[i].Link;
-                allNews.Add(new News(title, teaser, new Url(url)));
+                allNews.Add(new News(title, teaser, url));
             }
             return allNews;
         }
