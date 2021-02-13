@@ -22,7 +22,7 @@ namespace ParserNews
             string year = date.Split(", ")[2];
             return new DateTime(int.Parse(year), getMonthNumber(month), int.Parse(day));
         }
-        
+
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             for (int i = 0;; i++)

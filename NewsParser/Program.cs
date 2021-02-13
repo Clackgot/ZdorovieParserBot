@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ParserNews.NewsServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -74,10 +75,12 @@ namespace ParserNews
         public static Parser Parser()
         {
             return new Parser(new List<INewsService>() {
-                new Medicalnewstoday(),
-                new Medscape(),
-                new NewsMedical(),
-                new Bmj() });
+                //new Medicalnewstoday(),
+                //new Medscape(),
+                //new NewsMedical(),
+                //new Bmj() 
+                new nplus1()
+            });
         }
 
     }
