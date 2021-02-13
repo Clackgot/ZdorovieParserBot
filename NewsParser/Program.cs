@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ParserNews.NewsServices;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -114,7 +116,7 @@ namespace ParserNews
                 //new Medscape(),
                 //new NewsMedical(),
                 //new Bmj() 
-                new nplus1()
+                new Nplus1()
             });
         }
 
@@ -156,8 +158,6 @@ namespace ParserNews
         static void Main(string[] args)
         {
             var updater = new ChannelUpdater(ParserFactory.Parser());
-            //updater.Parse().Wait();
-            Console.WriteLine(updater);
             updater.Run();
         }
     }
