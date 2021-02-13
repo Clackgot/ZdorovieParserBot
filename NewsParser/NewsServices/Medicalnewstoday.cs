@@ -43,7 +43,7 @@ namespace ParserNews
                     var title = document.QuerySelector("div.css-z468a2 h1").TextContent;
                     var teaser = document.QuerySelector("article div p").TextContent;
                     var url = document.Url;
-                    allNews.Add(new News(title, teaser, new Url(url)));
+                    allNews.Add(new News(title, teaser, url));
                 }
                 
             }

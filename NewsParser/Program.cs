@@ -1,35 +1,92 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace ParserNews
 {
+
     public class ChannelUpdater
     {
-        public ChannelUpdater(){}
-        [XmlArray("CurrentNews"), XmlArrayItem("News")]
-        public List<News> CurrentNews = new List<News>();
-        [XmlArray("Distinction"), XmlArrayItem("News2")]
-        private List<News> Distinction = new List<News>();
-
-
-        public void Update(List<News> News)
+        private Parser parser;
+        private Bot bot = new Bot();
+        private List<News> publishedNews = new List<News>();
+        private List<News> parsedNews = new List<News>();
+        public ChannelUpdater(Parser parser)
         {
-            foreach (var item in News)
+            this.parser = parser;
+            Console.CancelKeyPress += Console_CancelKeyPress;
+            LoadPublishedNews();
+        }
+
+        private void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+        {
+            SavePublishedNews();
+        }
+        public void Publish()
+        {
+            for (int i = 0; i < parsedNews.Count; i++)
             {
-                if (!CurrentNews.Contains(item))
+                if (!publishedNews.Exists(n => n.Url == parsedNews[i].Url))
                 {
-                    CurrentNews.Add(item);
-                    Distinction.Add(item);
+                    publishedNews.Add(parsedNews[i]);
+                    bot.SendNews(parsedNews[i]).Wait();
+                    Console.WriteLine($"{i + 1}/{parsedNews.Count}");
+                    Thread.Sleep(TimeSpan.FromSeconds(3));
                 }
             }
+        }
+
+        public async Task Parse()
+        {
+            await parser.Parse();
+            parsedNews = parser.News;
+        }
+
+     
+        public void LoadPublishedNews()
+        {
+            if (System.IO.File.Exists("news.json"))
+            {
+                var serialized = System.IO.File.ReadAllText("news.json");
+                if (serialized.Length > 0) publishedNews = JsonConvert.DeserializeObject<List<News>>(serialized);
+            }
+            else
+            {
+                System.IO.File.Create("news.json");
+            }
+        }
+        public void Run()
+        {
+            for (int i = 0;; i++)
+            {
+                Parse().Wait();
+                Publish();
+                Thread.Sleep(TimeSpan.FromMinutes(0.2));
+            }
+
+        }
+        public void SavePublishedNews()
+        {
+            var serialized = JsonConvert.SerializeObject(publishedNews);
+            System.IO.File.WriteAllText("news.json", serialized);
+        }
+        public override string ToString()
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            string resultString = "";
+            foreach (var news in publishedNews)
+            {
+                resultString += news;
+                resultString += "\n";
+            }
+
+            return resultString.ToString();
         }
     }
     public class Parser
@@ -49,20 +106,12 @@ namespace ParserNews
             }
             await Task.WhenAll(allnews.ToArray());
 
-            foreach (var news in allnews)
-            {
-                foreach (var newsItem in news.Result)
-                {
-                    Console.WriteLine(newsItem);
-                }   
-            }
-            Console.WriteLine("--------------------------------------------------------------------------");
+            Console.Clear();
             foreach (var service in newsServices)
             {
                 var serv = (NewsService)service;
                 Console.WriteLine($"{serv.Name} {serv.NewsCount}");
             }
-            Console.WriteLine("--------------------------------------------------------------------------");
             foreach (var item in allnews)
             {
                 News.AddRange(item.Result);
@@ -74,29 +123,14 @@ namespace ParserNews
         public static Parser Parser()
         {
             return new Parser(new List<INewsService>() {
-                new Medicalnewstoday(),
-                new Medscape(),
-                new NewsMedical(),
+                //new Medicalnewstoday(),
+                //new Medscape(),
+                //new NewsMedical(),
                 new Bmj() });
         }
 
     }
 
-    public class Person
-    {
-        [XmlAttribute("Name")]
-        public string Name;
-        [XmlAttribute("Age")]
-        public int Age;
-    }
-    public class Company
-    {
-        [XmlArray("CurrentNews"), XmlArrayItem("News")]
-        public List<Person> People = new List<Person>();
-        public Company()
-        {
-        }
-    }
 
     class Bot
     {
@@ -121,60 +155,21 @@ namespace ParserNews
                 $"\n\n" +
                 $"{news.Teaser}" +
                 $"\n\n" +
-                $"<a href=\"{news.Url.Href}\">Источник</a>";
+                $"<a href=\"{news.Url}\">Источник</a>";
             var response = await bot.SendTextMessageAsync(new ChatId(channelName), message, Telegram.Bot.Types.Enums.ParseMode.Html, true);
             Thread.Sleep(3000);
             return response;
         }
     }
-    
+
     class Program
     {
         static void Main(string[] args)
         {
-            var parser = ParserFactory.Parser();
-            parser.Parse().Wait();
-            Bot bot = new Bot();
-            foreach (var newsItem in parser.News)
-            {
-                bot.SendNews(newsItem).Wait();
-
-            }
-        }
-
-
-        private static async Task Run()
-        {
-            List<News> AllNews = new List<News>();
-            List<INewsService> newsServices = new List<INewsService>();
-            newsServices.Add(new Medicalnewstoday());//https://www.medicalnewstoday.com
-            newsServices.Add(new Medscape()); //https://www.medscape.com/index/list_13470
-            newsServices.Add(new NewsMedical());//https://www.news-medical.net/syndication.axd?news=lifesciences
-            newsServices.Add(new Bmj());//
-            List<Task<IEnumerable<News>>> allnews = new List<Task<IEnumerable<News>>>();
-            foreach (var service in newsServices)
-            {
-                allnews.Add(service.GetAllNewsAsync());
-            }
-            foreach (var news in allnews)
-            {
-                foreach (var item in news.Result)
-                {
-                    Console.WriteLine(item);
-                }
-            }
-
-            // bot is working...
-
-            StupidBot bot = new StupidBot();
-
-            foreach (var news in AllNews)
-            {
-                //bot.SendMessage(news.Title);
-            }
-
-            Console.ReadKey();
-
+            var updater = new ChannelUpdater(ParserFactory.Parser());
+            //updater.Parse().Wait();
+            Console.WriteLine(updater);
+            updater.Run();
         }
 
         private static void medicalnewstoday()

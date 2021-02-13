@@ -12,7 +12,7 @@ namespace ParserNews
     /// </summary>
     public class News
     {
-        public News(string title, string teaser, Url url)
+        public News(string title, string teaser, string url)
         {
             Title = title;
             Teaser = teaser;
@@ -29,7 +29,7 @@ namespace ParserNews
         private string cutText(string text)
         {
             var tempText = text;
-            var temp = tempText.Substring(0, Math.Min(tempText.Length, teaserMaxLength - 3)) + "...";
+            var temp = tempText.Substring(0, Math.Min(tempText.Length, teaserMaxLength));
             return temp;
         }
         
@@ -37,10 +37,15 @@ namespace ParserNews
         [XmlAttribute("Teaser")]
         public string Teaser { get { return teaser; } set { teaser = cutText(value); } }
 
-        [XmlIgnore]
-        public Url Url { get; set; }
-        [XmlAttribute("Url")]
-        public string UrlAdapter { get { return this.Url.Href; } }
+        private string url;
+
+        public string Url
+        {
+            get { return url; }
+            set { url = value; }
+        }
+
+
 
         public override string ToString()
         {
