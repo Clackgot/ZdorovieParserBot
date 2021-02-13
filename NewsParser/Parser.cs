@@ -14,7 +14,8 @@ namespace ParserNews
                 new Medscape(),
                 new NewsMedical(),
                 new Bmj(),
-                new Nplus1()
+                new Nplus1(),
+                new Reuters() 
             });
         }
 
