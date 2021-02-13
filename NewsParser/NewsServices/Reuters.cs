@@ -12,7 +12,7 @@ namespace ParserNews.NewsServices
         protected override string BaseUrl => "https://www.reuters.com";
         public Reuters()
         {
-            Name = "https://www.reuters.com/";
+            Name = "reuters.com";
         }
 
         private bool IsCorrectDate(string date)
@@ -23,11 +23,16 @@ namespace ParserNews.NewsServices
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
+            allNews.Clear();
             for (int i = 1; ; i++)
             {
                 var documentRequest = DocumentRequest.Get(new Url($"https://www.reuters.com/news/archive/healthnews?view=page&page={i}&pageSize=10"));
                 var document = await context.OpenAsync(documentRequest);
-
+                if(document.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"{Name} {document.StatusCode}");
+                    return new List<News>();
+                }
                 var tags = document.QuerySelectorAll("div[class*='column1'] article.story > div.story-content");
                 foreach (var tag in tags)
                 {
@@ -48,7 +53,7 @@ namespace ParserNews.NewsServices
                     }
                     else
                     {
-                        //Console.ReadKey();
+                        Console.WriteLine($"{Name} {allNews.Count}");
                         return allNews;
                     }
                 }

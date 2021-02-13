@@ -26,7 +26,6 @@ namespace ParserNews
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             allNews.Clear();
-            Console.WriteLine("nlus1");
             for (int i = 0; ; i++)
             {
                 var documentRequest = DocumentRequest.Get(new Url(BaseUrl + i.ToString()));
