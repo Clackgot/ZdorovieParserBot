@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ParserNews.NewsServices
 {
-    class Nplus1 : NewsService
+    public class Nplus1 : NewsService
     {
         protected override string BaseUrl => "https://nplus1.ru/";
         public Nplus1()
