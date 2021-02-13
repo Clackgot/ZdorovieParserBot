@@ -25,10 +25,16 @@ namespace ParserNews
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
-            for (int i = 0;; i++)
+            allNews.Clear();
+            for (int i = 0; ; i++)
             {
                 var documentRequest = DocumentRequest.Get(new Url(BaseUrl + i.ToString()));
                 var result = await context.OpenAsync(documentRequest);
+                if (result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"{BaseUrl} {result.StatusCode}");
+                    return new List<News>();
+                }
                 var liTags = result.QuerySelectorAll("div#archives li");
                 bool validPage = false;
                 foreach (var li in liTags)
@@ -38,7 +44,7 @@ namespace ParserNews
                     var teaser = li.QuerySelector("span.teaser").TextContent;
                     var newsUrl = li.QuerySelector("a.title").GetAttribute("href");
                     newsUrl = @"https:" + newsUrl;
-                    
+
                     if (getDate(date) == DateTime.Today)
                     {
                         allNews.Add(new News(title, teaser, newsUrl));
@@ -47,6 +53,7 @@ namespace ParserNews
                 }
                 if (!validPage) break;
             }
+            Console.WriteLine($"{Name} {allNews.Count}");
             return allNews;
         }
     }
