@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ParserNews.NewsServices
 {
-    class nplus1 : NewsService
+    class Nplus1 : NewsService
     {
         protected override string BaseUrl => "https://nplus1.ru/";
-        public nplus1()
+        public Nplus1()
         {
             Name = "https://nplus1.ru/";
         }
@@ -61,8 +61,7 @@ namespace ParserNews.NewsServices
 
                 if (getDate(date) == DateTime.Today)
                 {
-                    //Console.WriteLine(date + " " + title + "\n" + BaseUrl + link + "\n" + teaser + "\n");
-                    allNews.Add(new News(title, teaser, new Url(BaseUrl + link)));
+                    allNews.Add(new News(title, teaser, BaseUrl + link));
                 }
             }
             return allNews;
