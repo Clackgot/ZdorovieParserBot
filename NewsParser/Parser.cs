@@ -41,7 +41,6 @@ namespace ParserNews
             foreach (var service in newsServices)
             {
                 var serv = (NewsService)service;
-                Console.WriteLine($"{serv.Name} {serv.NewsCount}");
             }
             foreach (var item in allnews)
             {
