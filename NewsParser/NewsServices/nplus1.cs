@@ -14,7 +14,7 @@ namespace ParserNews.NewsServices
         protected override string BaseUrl => "https://nplus1.ru/";
         public Nplus1()
         {
-            Name = "https://nplus1.ru/";
+            Name = "nplus1.ru";
         }
 
         private DateTime getDate(string date)
@@ -28,9 +28,15 @@ namespace ParserNews.NewsServices
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
+            allNews.Clear();
             //var documentRequest = DocumentRequest.Get(new Url("https://nplus1.ru/theme/coronavirus-history"));
             var documentRequest = DocumentRequest.Get(new Url("https://nplus1.ru/rubric/medicine"));
             var document = await context.OpenAsync(documentRequest);
+            if(document.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                Console.WriteLine($"{BaseUrl} {document.StatusCode}");
+                return new List<News>();
+            }
 
             var tags = document.QuerySelectorAll("article[class*='item-news']");
             foreach (var item in tags)
@@ -64,6 +70,7 @@ namespace ParserNews.NewsServices
                     allNews.Add(new News(title, teaser, BaseUrl + link));
                 }
             }
+            Console.WriteLine($"{BaseUrl} {allNews.Count}");
             return allNews;
         }
     }

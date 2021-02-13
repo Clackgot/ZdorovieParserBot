@@ -23,7 +23,11 @@ namespace ParserNews
             {
                 string url = BaseUrl + i.ToString();
                 var document = context.OpenAsync(url);
-
+                if(document.Result.StatusCode != System.Net.HttpStatusCode.OK)
+                {
+                    Console.WriteLine($"{BaseUrl} {document.Result.StatusCode}");
+                    return null;
+                }
                 string date = DateTime.Now.ToString("dd MMM yyyy", CultureInfo.GetCultureInfo("en-us"));
                 bool exsistTodayNews = false;
                 foreach (var item in document.Result.QuerySelectorAll("span.article-meta-date"))
@@ -44,7 +48,12 @@ namespace ParserNews
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
+            allNews.Clear();
             var pages = await getPages();
+            if(pages == null)
+            {
+                return new List<News>();
+            }
             foreach (var page in pages)
             {
                 string baseUrl = "https://www.news-medical.net/medical";
@@ -62,6 +71,7 @@ namespace ParserNews
                     }
                 }
             }
+            Console.WriteLine($"{BaseUrl} {allNews.Count}");
             return allNews;
         }
     }
