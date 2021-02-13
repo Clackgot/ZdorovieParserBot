@@ -29,7 +29,7 @@ namespace ParserNews
                     var url = result.Items.AsEnumerable().ToArray()[i].Link;
                     allNews.Add(new News(title, teaser, url));
                 }
-                Console.WriteLine($"{BaseUrl} {allNews.Count}");
+                Console.WriteLine($"{Name} {allNews.Count}");
             }
             else
             {

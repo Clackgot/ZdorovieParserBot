@@ -25,7 +25,7 @@ namespace ParserNews
                 var document = context.OpenAsync(url);
                 if(document.Result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine($"{BaseUrl} {document.Result.StatusCode}");
+                    Console.WriteLine($"{Name} {document.Result.StatusCode}");
                     return null;
                 }
                 string date = DateTime.Now.ToString("dd MMM yyyy", CultureInfo.GetCultureInfo("en-us"));
@@ -71,7 +71,7 @@ namespace ParserNews
                     }
                 }
             }
-            Console.WriteLine($"{BaseUrl} {allNews.Count}");
+            Console.WriteLine($"{Name} {allNews.Count}");
             return allNews;
         }
     }

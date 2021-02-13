@@ -17,7 +17,7 @@ namespace ParserNews.NewsServices
             Name = "nplus1.ru";
         }
 
-        private DateTime getDate(string date)
+        private static DateTime getDate(string date)
         {
             date = "2021-02-12";
             string year = date.Split('-')[0];
@@ -34,7 +34,7 @@ namespace ParserNews.NewsServices
             var document = await context.OpenAsync(documentRequest);
             if(document.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                Console.WriteLine($"{BaseUrl} {document.StatusCode}");
+                Console.WriteLine($"{Name} {document.StatusCode}");
                 return new List<News>();
             }
 
@@ -70,7 +70,7 @@ namespace ParserNews.NewsServices
                     allNews.Add(new News(title, teaser, BaseUrl + link));
                 }
             }
-            Console.WriteLine($"{BaseUrl} {allNews.Count}");
+            Console.WriteLine($"{Name} {allNews.Count}");
             return allNews;
         }
     }
