@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -126,7 +125,9 @@ namespace ParserNews
                 //new Medicalnewstoday(),
                 //new Medscape(),
                 //new NewsMedical(),
-                new Bmj() });
+                //new Bmj() 
+                new nplus1()
+            });
         }
 
     }
