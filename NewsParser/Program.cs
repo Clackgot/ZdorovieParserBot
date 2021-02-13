@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
@@ -76,18 +75,6 @@ namespace ParserNews
             var serialized = JsonConvert.SerializeObject(publishedNews);
             System.IO.File.WriteAllText("news.json", serialized);
         }
-        public override string ToString()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            string resultString = "";
-            foreach (var news in publishedNews)
-            {
-                resultString += news;
-                resultString += "\n";
-            }
-
-            return resultString.ToString();
-        }
     }
     public class Parser
     {
@@ -126,7 +113,9 @@ namespace ParserNews
                 //new Medicalnewstoday(),
                 //new Medscape(),
                 //new NewsMedical(),
-                new Bmj() });
+                //new Bmj() 
+                new nplus1()
+            });
         }
 
     }
