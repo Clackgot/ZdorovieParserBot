@@ -50,12 +50,12 @@ namespace ParserNews
                     }
 
                 }
-                Console.WriteLine($"{BaseUrl} {allNews.Count}");
+                Console.WriteLine($"{Name} {allNews.Count}");
                 
             }
             else
             {
-                Console.WriteLine($"{BaseUrl} {result.StatusCode}");
+                Console.WriteLine($"{Name} {result.StatusCode}");
             }
             return allNews;
         }

@@ -10,11 +10,12 @@ namespace ParserNews
         public static Parser Parser()
         {
             return new Parser(new List<INewsService>() {
-                new Medicalnewstoday(),
-                new Medscape(),
-                new NewsMedical(),
-                new Bmj(),
-                new Nplus1()
+                //new Medicalnewstoday(),
+                //new Medscape(),
+                new Nplus1(),
+                //new NewsMedical(),
+                //new Bmj(),
+
             });
         }
 
@@ -36,7 +37,7 @@ namespace ParserNews
             }
             await Task.WhenAll(allnews.ToArray());
 
-            Console.Clear();
+            //Console.Clear();
             foreach (var service in newsServices)
             {
                 var serv = (NewsService)service;

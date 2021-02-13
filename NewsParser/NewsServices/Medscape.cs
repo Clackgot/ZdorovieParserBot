@@ -26,13 +26,14 @@ namespace ParserNews
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             allNews.Clear();
+            Console.WriteLine("nlus1");
             for (int i = 0; ; i++)
             {
                 var documentRequest = DocumentRequest.Get(new Url(BaseUrl + i.ToString()));
                 var result = await context.OpenAsync(documentRequest);
                 if (result.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    Console.WriteLine($"{BaseUrl} {result.StatusCode}");
+                    Console.WriteLine($"{Name} {result.StatusCode}");
                     return new List<News>();
                 }
                 var liTags = result.QuerySelectorAll("div#archives li");
