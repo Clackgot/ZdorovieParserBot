@@ -22,7 +22,6 @@ namespace ParserNews
         {
 
         }
-        [XmlAttribute("Title")]
         public string Title { get; set; }
 
         public const int teaserMaxLength = 200;
@@ -34,7 +33,6 @@ namespace ParserNews
         }
         
         private string teaser;
-        [XmlAttribute("Teaser")]
         public string Teaser { get { return teaser; } set { teaser = cutText(value); } }
 
         private string url;
