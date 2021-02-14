@@ -11,7 +11,7 @@ namespace ParserNews.NewsServices
 {
     public class Nplus1 : NewsService
     {
-        protected override string BaseUrl => "https://nplus1.ru/";
+        protected override string BaseUrl => "https://nplus1.ru";
         public Nplus1()
         {
             Name = "nplus1.ru";
@@ -37,34 +37,31 @@ namespace ParserNews.NewsServices
                 Console.WriteLine($"{Name} {document.StatusCode}");
                 return new List<News>();
             }
-
             var tags = document.QuerySelectorAll("article[class*='item-news']");
             foreach (var item in tags)
             {
                 var title = item.QuerySelector("a > div.caption > h3").TextContent;
                 var date = item.QuerySelector("a > div.caption > div.date > span").GetAttribute("title");
                 var link = item.QuerySelector("a").GetAttribute("href");
-                // var time = item.QuerySelector("a > div.caption > div.date > span").TextContent;
 
                 var documentSite = DocumentRequest.Get(new Url(BaseUrl + link));
                 var doc = await context.OpenAsync(documentSite);
-                //Console.WriteLine(doc.ToHtml());
 
-                var temp = doc.QuerySelector($"div[class*='body']");
+                var teasers = doc.QuerySelector($"div[class*='body']");
                 string teaser = "";
-                for (int i = 1; i < 10;)
+                foreach (var it in teasers.Children)
                 {
-                    if (string.IsNullOrEmpty(temp.Children[i].TextContent) || temp.Children[i].TextContent.Length < 15)
+                    if (!it.ToHtml().Contains("class"))
                     {
-                        i++;
-                    }
-                    else
-                    {
-                        teaser = temp.Children[i].TextContent; break;
+                        var tmp = Regex.Replace(it.TextContent, @"[\r\n\t]", " ").Trim();
+                        if (tmp.Length > 100)
+                        {
+                            teaser = tmp; break;
+                        }
                     }
                 }
-                teaser = Regex.Replace(teaser, @"[\r\n\t]", "");
-
+               
+                //Console.WriteLine($" * {title}\n * {teaser}\n * {BaseUrl + link}\n");
                 if (getDate(date) == DateTime.Today)
                 {
                     allNews.Add(new News(title, teaser, BaseUrl + link));
