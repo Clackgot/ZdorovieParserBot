@@ -10,12 +10,12 @@ namespace ParserNews
         public static Parser Parser()
         {
             return new Parser(new List<INewsService>() {
-                //new Medicalnewstoday(),
-                //new Medscape(),
-                //new NewsMedical(),
-                //new Bmj(),
+                new Medicalnewstoday(),
+                new Medscape(),
+                new NewsMedical(),
+                new Bmj(),
                 new Nplus1()
-                //new Reuters() 
+                new Reuters()
             });
         }
 
