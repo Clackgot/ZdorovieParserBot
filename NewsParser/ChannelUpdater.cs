@@ -59,12 +59,13 @@ namespace ParserNews
         }
         public void Run()
         {
-            TimeSpan timeout = TimeSpan.FromSeconds(0.2);
+            TimeSpan timeout = TimeSpan.FromSeconds(2);
             for (int i = 0;; i++)
             {
                 Console.Clear();
                 Parse().Wait();
                 Publish();
+                SavePublishedNews();
                 Console.WriteLine($"Ожидание {timeout.TotalMinutes} минут для проверки новостей");
                 Thread.Sleep(timeout);
             }
