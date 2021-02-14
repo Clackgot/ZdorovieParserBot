@@ -20,20 +20,23 @@ namespace ParserNews
         }
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
+            allNews.Clear();
+
             var handler = new HttpClientHandler()
             {
-                Proxy = new WebProxy("96.96.123.154:80", false),
-                PreAuthenticate = true,
-                UseDefaultCredentials = true,
-                MaxConnectionsPerServer = 1
+                //Proxy = new WebProxy("96.96.123.154:80", false),
+                PreAuthenticate = false,
+                UseDefaultCredentials = false,
+                MaxConnectionsPerServer = 1,
+                UseCookies = false,
             };
             var config = Configuration.Default
     .WithDefaultLoader().WithRequesters(handler);//Использовать стандартный загрузчик и использовать куки
             context = BrowsingContext.New(config);//Инициализация контекста отправки запросов(а-ля сессия)
-            allNews.Clear();
             List<IDocument> documents = new List<IDocument>();
             var documentRequest = DocumentRequest.Get(new Url(BaseUrl));
             var result = await context.OpenAsync(documentRequest);
+            if (result != null)
             if(result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 List<string> latestNewsLinks = new List<string>();
@@ -45,8 +48,12 @@ namespace ParserNews
                     latestNewsLinks.Add(fullLink);
                     var docRequest = DocumentRequest.Get(new Url(fullLink));
                     var doc = context.OpenAsync(docRequest).Result;
-                    Thread.Sleep(1000);
-                    documents.Add(doc);
+                    if (doc.StatusCode == HttpStatusCode.OK) documents.Add(doc);
+                    else
+                    {
+                        Console.WriteLine($"{Name} {result.StatusCode}");
+                        return new List<News>();
+                    }
                 }
                 Regex regex = new Regex("publishedDate\":\".*?\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 

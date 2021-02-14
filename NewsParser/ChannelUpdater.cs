@@ -35,6 +35,7 @@ namespace ParserNews
                     Thread.Sleep(TimeSpan.FromSeconds(3));
                 }
             }
+            parsedNews.Clear();
         }
 
         public async Task Parse()
@@ -58,7 +59,7 @@ namespace ParserNews
         }
         public void Run()
         {
-            TimeSpan timeout = TimeSpan.FromMinutes(0.2);
+            TimeSpan timeout = TimeSpan.FromSeconds(0.2);
             for (int i = 0;; i++)
             {
                 Console.Clear();
