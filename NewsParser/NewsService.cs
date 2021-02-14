@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -75,9 +77,19 @@ namespace ParserNews
         protected IBrowsingContext context;
         public NewsService()
         {
+
+            var handler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy("96.96.123.154:80", false),
+                PreAuthenticate = false,
+                UseDefaultCredentials = false,
+                MaxConnectionsPerServer = 1,
+                UseCookies = true,
+            };
             var config = Configuration.Default
                 .WithDefaultCookies()
-                .WithDefaultLoader();//Использовать стандартный загрузчик и использовать куки
+                .WithDefaultLoader()
+                .WithRequesters(handler);//Использовать стандартный загрузчик и использовать куки
             context = BrowsingContext.New(config);//Инициализация контекста отправки запросов(а-ля сессия)
         }
         public abstract Task<IEnumerable<News>> GetAllNewsAsync();
