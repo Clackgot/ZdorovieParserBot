@@ -3,7 +3,10 @@ using AngleSharp.Dom;
 using AngleSharp.Io;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ParserNews
@@ -17,8 +20,18 @@ namespace ParserNews
         }
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
+            var handler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy("96.96.123.154:80", false),
+                PreAuthenticate = true,
+                UseDefaultCredentials = true,
+                MaxConnectionsPerServer = 1
+            };
+            var config = Configuration.Default
+    .WithDefaultLoader().WithRequesters(handler);//Использовать стандартный загрузчик и использовать куки
+            context = BrowsingContext.New(config);//Инициализация контекста отправки запросов(а-ля сессия)
             allNews.Clear();
-            List<Task<IDocument>> documents = new List<Task<IDocument>>();
+            List<IDocument> documents = new List<IDocument>();
             var documentRequest = DocumentRequest.Get(new Url(BaseUrl));
             var result = await context.OpenAsync(documentRequest);
             if(result.StatusCode == System.Net.HttpStatusCode.OK)
@@ -31,14 +44,13 @@ namespace ParserNews
                     var fullLink = BaseUrl + link.GetAttribute("href");
                     latestNewsLinks.Add(fullLink);
                     var docRequest = DocumentRequest.Get(new Url(fullLink));
-                    var doc = context.OpenAsync(docRequest);
+                    var doc = context.OpenAsync(docRequest).Result;
+                    Thread.Sleep(1000);
                     documents.Add(doc);
                 }
-                Task.WaitAll(documents.ToArray());
-                var completeDocuments = documents.ConvertAll(doc => doc.Result);
                 Regex regex = new Regex("publishedDate\":\".*?\"", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-                foreach (var document in completeDocuments)
+                foreach (var document in documents)
                 {
                     string dateString = regex.Match(document.Source.Text).Value.Split("\":\"")[1].Trim('"');
                     if ((DateTime.Parse(dateString)) == DateTime.Today)
