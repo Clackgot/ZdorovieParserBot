@@ -15,7 +15,9 @@ namespace ParserNews
                 new NewsMedical(),
                 new Bmj(),
                 new Nplus1(),
-                new Reuters()
+                new Reuters(),
+                //new vademec(),
+                new takiedela()
             });
         }
 
