@@ -80,7 +80,7 @@ namespace ParserNews
 
             var handler = new HttpClientHandler()
             {
-                Proxy = new WebProxy("96.96.123.154:80", false),
+                //Proxy = new WebProxy("96.96.123.154:80", false),
                 PreAuthenticate = false,
                 UseDefaultCredentials = false,
                 MaxConnectionsPerServer = 1,

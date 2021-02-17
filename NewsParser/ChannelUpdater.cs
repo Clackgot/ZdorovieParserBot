@@ -59,7 +59,9 @@ namespace ParserNews
         }
         public void Run()
         {
-            TimeSpan timeout = TimeSpan.FromSeconds(2);
+            TimeSpan timeout = TimeSpan.FromMinutes(3);
+            //TimeSpan timeout = TimeSpan.FromSeconds(180);
+            //TimeSpan timeout = TimeSpan.FromHours(0.05);
             for (int i = 0;; i++)
             {
                 Console.Clear();
