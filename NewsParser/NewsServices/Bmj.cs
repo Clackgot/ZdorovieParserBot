@@ -35,7 +35,7 @@ namespace ParserNews
             {
                 Console.WriteLine($"{Name} {page.StatusCode}");
             }
-
+            
             return allNews;
         }
     }
