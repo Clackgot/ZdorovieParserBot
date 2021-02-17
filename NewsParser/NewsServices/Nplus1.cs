@@ -20,7 +20,6 @@ namespace ParserNews.NewsServices
 
         private static DateTime getDate(string date)
         {
-            date = "2021-02-12";
             string year = date.Split('-')[0];
             string month = date.Split('-')[1];
             string day = date.Split('-')[2];
