@@ -53,6 +53,7 @@ namespace ParserNews.NewsServices
                 Console.WriteLine($"{Name} {e.Message}");
                 return new List<News>();
             }
+            Console.WriteLine($"{Name} {allNews.Count}");
             return allNews;
         }
     }
