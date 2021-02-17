@@ -11,6 +11,10 @@ namespace ParserNews.NewsServices
     {
         protected override string BaseUrl => "https://spid.center/ru/news";
 
+        public SpidСenter()
+        {
+            Name = "spid.center";
+        }
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             allNews.Clear();
