@@ -16,6 +16,9 @@ namespace ParserNews
                 new Bmj(),
                 new Nplus1(),
                 new Reuters(),
+                //new vademec(),
+                new takiedela()
+                new Reuters(),
                 new SpidСenter() 
             });
         }
