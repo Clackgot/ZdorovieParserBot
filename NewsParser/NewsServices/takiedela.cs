@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace ParserNews.NewsServices
 {
-    class takiedela : NewsService
+    class Takiedela : NewsService
     {
         protected override string BaseUrl => "https://takiedela.ru";
-        public takiedela()
+        public Takiedela()
         {
             Name = "takiedela.ru";
         }

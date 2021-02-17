@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace ParserNews.NewsServices
 {
-    class vademec : NewsService
+    class Vademec : NewsService
     {
         protected override string BaseUrl => "https://vademec.ru/news";
-        public vademec()
+        public Vademec()
         {
             Name = "vademec.ru";
         }

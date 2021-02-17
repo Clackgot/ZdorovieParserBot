@@ -17,7 +17,7 @@ namespace ParserNews
                 new Nplus1(),
                 new Reuters(),
                 //new vademec(),
-                new takiedela()
+                new Takiedela(),
                 new Reuters(),
                 new SpidСenter() 
             });
