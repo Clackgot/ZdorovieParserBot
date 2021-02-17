@@ -17,7 +17,15 @@ namespace ParserNews
                 new Nplus1(),
                 new Reuters(),
                 //new vademec(),
-                new takiedela()
+                new Takiedela(),
+                new Reuters(),
+                new SpidСenter() 
+            });
+        }
+        public static Parser Test()
+        {
+            return new Parser(new List<INewsService>() {
+                new SpidСenter()
             });
         }
 
