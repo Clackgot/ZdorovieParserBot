@@ -12,7 +12,7 @@ namespace ParserNews
     {
         static void Main(string[] args)
         {
-            var updater = new ChannelUpdater(ParserFactory.Parser());
+            var updater = new ChannelUpdater(ParserFactory.Test());
             updater.Run();
         }
     }
