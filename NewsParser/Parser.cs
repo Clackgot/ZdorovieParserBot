@@ -18,14 +18,14 @@ namespace ParserNews
                 new Reuters(),
                 //new vademec(),
                 new Takiedela(),
-                new Reuters(),
-                new SpidСenter() 
+                new SpidСenter(),
+                new Medicalxpress()
             });
         }
         public static Parser Test()
         {
             return new Parser(new List<INewsService>() {
-                new SpidСenter()
+                new Medicalxpress()
             });
         }
 
