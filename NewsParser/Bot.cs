@@ -5,17 +5,29 @@ using Telegram.Bot.Types;
 
 namespace ParserNews
 {
-    class Bot
+    public static class BotFactory
     {
-        public string token = "1656601649:AAG1d5BQ8GCdkt5QP6PRKxriPFSewixNKFQ";
+        public static Bot ReleasedBot()
+        {
+            return new Bot("1527590284:AAFu8RGnAiiJh6qkdhmKUqkvs48oMmCi0ow", "newstestbot1");
+        }
+        public static Bot DebugBot()
+        {
+            return new Bot("1527590284:AAFu8RGnAiiJh6qkdhmKUqkvs48oMmCi0ow", "debugzdoroviebot");
+        }
+    }
+    public class Bot
+    {
+        public string token;
 
-        public string channelName = "@newstestbot1";
+        public string channelName;
 
 
         private TelegramBotClient bot;
-        public Bot(string token)
+        public Bot(string token, string channelName)
         {
             this.token = token;
+            this.channelName = "@" + channelName;
             bot = new TelegramBotClient(this.token);
         }
         public Bot()

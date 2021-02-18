@@ -9,12 +9,13 @@ namespace ParserNews
     public class ChannelUpdater
     {
         private Parser parser;
-        private Bot bot = new Bot();
+        private Bot bot;
         private List<News> publishedNews = new List<News>();
         private List<News> parsedNews = new List<News>();
-        public ChannelUpdater(Parser parser)
+        public ChannelUpdater(Parser parser, Bot bot)
         {
             this.parser = parser;
+            this.bot = bot;
             Console.CancelKeyPress += Console_CancelKeyPress;
             LoadPublishedNews();
         }
