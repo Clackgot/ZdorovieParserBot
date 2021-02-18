@@ -18,7 +18,8 @@ namespace ParserNews
                 new Reuters(),
                 new Takiedela(),
                 new SpidСenter(),
-                new Medicalxpress()
+                new Medicalxpress(),
+                new Nature()
             });
         }
         public static Parser Test()
@@ -26,7 +27,6 @@ namespace ParserNews
             return new Parser(new List<INewsService>() {
                 //new Sciencemag()
                 //new Vademec()
-                new Nature()
             });
         }
 
