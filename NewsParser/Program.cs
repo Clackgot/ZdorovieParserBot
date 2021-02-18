@@ -13,7 +13,8 @@ namespace ParserNews
         static void Main(string[] args)
         {
             
-            var updater = new ChannelUpdater(ParserFactory.Parser(), BotFactory.DebugBot());
+            //var updater = new ChannelUpdater(ParserFactory.Parser(), BotFactory.DebugBot());
+            var updater = new ChannelUpdater(ParserFactory.Test(), BotFactory.DebugBot());
             updater.Run();
         }
     }

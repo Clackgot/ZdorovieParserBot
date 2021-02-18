@@ -68,11 +68,11 @@ namespace ParserNews.NewsServices
                                 if (teaser.Length < 300) teaser += it.TextContent.Trim();
                                 else break;
                             }
-                            if (title != null && teaser != null && link != null)
+                            if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(teaser) && !string.IsNullOrEmpty(link))
                             {
+                                //Console.WriteLine(date + " " + title + "\n" + BaseUrl + link + "\n"+teaser+"\n");
                                 allNews.Add(new News(title, teaser, link));
                             }
-                            //Console.WriteLine(date + " " + title + "\n" + BaseUrl + link + "\n"+teaser+"\n");
                         }
                         else
                         {
