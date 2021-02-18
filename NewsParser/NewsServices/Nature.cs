@@ -43,7 +43,7 @@ namespace ParserNews.NewsServices
                     //Console.WriteLine("******************************************************************************");
 
                     var date = item.QuerySelector("time").GetAttribute("datetime");
-
+                    Console.WriteLine(date);
                     if (CorrectDate(date) == DateTime.Today)
                     {
 
