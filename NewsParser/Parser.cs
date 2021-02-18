@@ -19,13 +19,13 @@ namespace ParserNews
                 //new vademec(),
                 new Takiedela(),
                 new SpidСenter(),
-                new Medicalxpress()
+                new Medicalxpress(),
+                new Nature()
             });
         }
         public static Parser Test()
         {
             return new Parser(new List<INewsService>() {
-                new Sciencemag()
             });
         }
 
