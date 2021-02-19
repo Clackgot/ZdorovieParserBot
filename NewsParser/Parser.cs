@@ -26,7 +26,7 @@ namespace ParserNews
         public static Parser Test()
         {
             return new Parser(new List<INewsService>() {
-                new Nature()
+                new Takiedela()
             });
         }
 
