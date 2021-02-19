@@ -65,7 +65,7 @@ namespace ParserNews.NewsServices
 
                             foreach (var it in teasers)
                             {
-                                if (teaser.Length < 300) teaser += it.TextContent.Trim();
+                                if (teaser.Length < 200) teaser += it.TextContent.Trim()+" ";
                                 else break;
                             }
                             if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(teaser) && !string.IsNullOrEmpty(link))

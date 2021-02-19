@@ -52,14 +52,13 @@ namespace ParserNews.NewsServices
                 var documentSite = DocumentRequest.Get(new Url(link));
                 var doc = await context.OpenAsync(documentSite);
 
-                //var teasers = doc.QuerySelector("div.b-article__content, div.b-single__content-720");
                 var teasers = doc.QuerySelectorAll("div[data-io-article-url] p");
                 if (teasers == null) continue;
                 string teaser = "";
 
                 foreach (var it in teasers)
                 {
-                    if (teaser.Length < 300) teaser += it.TextContent.Trim();
+                    if (teaser.Length < 300) teaser += it.TextContent.Trim()+" ";
                     else break;
                 }
 
