@@ -10,17 +10,17 @@ namespace ParserNews
         public static Parser Parser()
         {
             return new Parser(new List<INewsService>() {
-                //new Medicalnewstoday(),
-                //new Medscape(),
-                //new NewsMedical(),
-                //new Bmj(),
-                //new Nplus1(),
-                //new Reuters(),
-                //new Takiedela(),
-                //new SpidСenter(),
-                //new Medicalxpress(),
-                //new Nature(),
-                //new Sciencemag()
+                new Medicalnewstoday(),
+                new Medscape(),
+                new NewsMedical(),
+                new Bmj(),
+                new Nplus1(),
+                new Reuters(),
+                new Takiedela(),
+                new SpidСenter(),
+                new Medicalxpress(),
+                new Nature(),
+                new Sciencemag()
             });
         }
         public static Parser Test()
