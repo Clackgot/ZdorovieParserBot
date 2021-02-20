@@ -21,10 +21,13 @@ namespace ParserNews.NewsServices
             Name = "meduza.io";
         }
 
-        private bool IsCorrectDate(string date)
+        private bool UnixToDateTime(string date)
         {
-            return true;
+            DateTime Date = (new DateTime(1970, 1, 1, 0, 0, 0, 0)).AddSeconds(int.Parse(date));
+            if (Date.Date == DateTime.Today) return true;
+            else return false;
         }
+
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
@@ -51,11 +54,11 @@ namespace ParserNews.NewsServices
                 {
                     var title = item["title"]?.ToString();
                     var link = BaseUrl + item["url"]?.ToString();
-                    //Console.WriteLine($"---: {datetime}\n1.{title}\n2.{link}\n3.{teaser}\n========================================================================================\n");
                     
                     if (!string.IsNullOrEmpty(title) && !string.IsNullOrEmpty(teaser) && !string.IsNullOrEmpty(link))
                     {
-                        allNews.Add(new News(title, teaser, link));
+                       //Console.WriteLine($"---: {datetime}\n1.{title}\n2.{link}\n3.{teaser}\n========================================================================================\n");
+                       allNews.Add(new News(title, teaser, link));
                     }
                 }
 
@@ -96,14 +99,6 @@ namespace ParserNews.NewsServices
                 //Console.ReadKey();
             }
             return allNews;
-        }
-
-
-        private bool UnixToDateTime(string date)
-        {
-            DateTime Date = (new DateTime(1970, 1, 1, 0, 0, 0, 0)).AddSeconds(int.Parse(date));
-            if (Date.Date == DateTime.Today) return true;
-            else return false;
         }
 
     }

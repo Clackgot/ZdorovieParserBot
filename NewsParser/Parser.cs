@@ -20,7 +20,8 @@ namespace ParserNews
                 new SpidСenter(),
                 new Medicalxpress(),
                 new Nature(),
-                new Sciencemag()
+                new Sciencemag(),
+                new Meduza(),
             });
         }
         public static Parser Test()
