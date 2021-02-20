@@ -15,6 +15,8 @@ namespace ParserNews.NewsServices
             Name = "reuters.com";
         }
 
+       
+
         private bool IsCorrectDate(string date)
         {
             bool IsBool = (date.Contains("EST") || (DateTime.Now.AddDays(-1).ToShortDateString() == DateTime.Parse(date).ToShortDateString()));
