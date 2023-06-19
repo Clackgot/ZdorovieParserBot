@@ -58,7 +58,7 @@ namespace ParserNews.NewsServices
                         if (!it.ToHtml().Contains("class"))
                         {
                             var tmp = Regex.Replace(it.TextContent, @"[\r\n\t]", " ").Trim();
-                            if (tmp.Length > 100)
+                            if (tmp.Length > 200)
                             {
                                 teaser = tmp; break;
                             }

@@ -16,16 +16,18 @@ namespace ParserNews
                 new Bmj(),
                 new Nplus1(),
                 new Reuters(),
-                //new vademec(),
                 new Takiedela(),
                 new SpidСenter(),
                 new Medicalxpress(),
-                new Nature()
+                new Nature(),
+                new Sciencemag(),
+                new Meduza(),
             });
         }
         public static Parser Test()
         {
             return new Parser(new List<INewsService>() {
+                new Meduza(),
             });
         }
 

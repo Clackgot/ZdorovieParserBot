@@ -1,4 +1,5 @@
 ﻿using AngleSharp;
+using AngleSharp.Dom;
 using AngleSharp.Io;
 using System;
 using System.Collections.Generic;
@@ -16,67 +17,64 @@ namespace ParserNews.NewsServices
             Name = "takiedela.ru";
         }
 
+        private DateTime CorrectDate(string date)
+        {
+            string day = date.Split(". ")[0];
+            string month = date.Split(". ")[1];
+            string year = date.Split(". ")[2];
+            return new DateTime(int.Parse(year), int.Parse(month), int.Parse(day));
+        }
+
         private bool IsCorrectDate(string date)
         {
-            if (date.Contains(":") || date == "Только что")
-                return true;
-            else return false; 
+            if (date.Contains(":") || date == "Только что") return true;
+            else if (CorrectDate(date) == DateTime.Today) return true;
+            else return false;
         }
 
         public override async Task<IEnumerable<News>> GetAllNewsAsync()
         {
             allNews.Clear();
-            for (int i = 1; ; i++)
+            var documentRequest = DocumentRequest.Get(new Url($"https://takiedela.ru/plot/koronavirus-covid-19/"));
+            var document = await context.OpenAsync(documentRequest);
+            if (document.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                var documentRequest = DocumentRequest.Get(new Url($"https://takiedela.ru/news/page/{i}/"));
-                var document = await context.OpenAsync(documentRequest);
-                if (document.StatusCode != System.Net.HttpStatusCode.OK)
+                Console.WriteLine($"{Name} {document.StatusCode}");
+                return new List<News>();
+            }
+            var tags = document.QuerySelectorAll("ul.b-plot__list li.b-plot__list__elem");
+            foreach (var item in tags)
+            {
+                var title = item.QuerySelector("div.b-plot__list__elem__txt > a").TextContent.Trim();
+                var date = item.QuerySelector("div.b-plot__list__elem__date").TextContent.Trim();
+                var link = item.QuerySelector("div.b-plot__list__elem__txt a.b-plot__list__elem__txt__lnk").GetAttribute("href");
+
+                var documentSite = DocumentRequest.Get(new Url(link));
+                var doc = await context.OpenAsync(documentSite);
+
+                var teasers = doc.QuerySelectorAll("div[data-io-article-url] p");
+                if (teasers == null) continue;
+                string teaser = "";
+
+                foreach (var it in teasers)
                 {
-                    Console.WriteLine($"{Name} {document.StatusCode}");
-                    return new List<News>();
+                    if (teaser.Length < 300) teaser += it.TextContent.Trim()+" ";
+                    else break;
                 }
-                var tags = document.QuerySelectorAll("ul[class='b-news-list b-news-list_inside'] li");
-                foreach (var item in tags)
+
+
+                if (IsCorrectDate(date))
                 {
-                    var title = item.QuerySelector("a[href]").TextContent.Trim();
-                    var date = item.QuerySelector("time").TextContent.Trim();
-                    var link = item.QuerySelector("a[href]").GetAttribute("href");
-
-
-                    var documentSite = DocumentRequest.Get(new Url(link));
-                    var doc = await context.OpenAsync(documentSite);
-
-                    var teasers = doc.QuerySelector($"div.b-article__content");
-                    if (teasers == null) continue;
-                    string teaser = "";
-
-                    foreach (var it in teasers.Children)
-                    {
-                        //var tmp = Regex.Replace(it.TextContent, @"[\r\n\t]", " ").Trim();
-
-                        if (teaser.Length < 300)
-                        {
-                            if (!it.ToHtml().Contains("div"))
-                            {
-                                teaser += it.TextContent.Trim();
-                            }
-                        }
-                        else break;
-                    }
-
-                    if (IsCorrectDate(date))
-                    {
-                        //Console.WriteLine($"{date}: {title}\n{teaser}\n{link}\n");
-
-                        allNews.Add(new News(title, teaser, link));
-                    }
-                    else
-                    {
-                        Console.WriteLine($"{Name} {allNews.Count}");
-                        return allNews;
-                    }
+                    //Console.WriteLine($"{date}: {title}\n{teaser}\n{link}\n\n\n");
+                    allNews.Add(new News(title, teaser, link));
+                }
+                else
+                {
+                    Console.WriteLine($"{Name} {allNews.Count}");
+                    return allNews;
                 }
             }
+            return new List<News>();
         }
     }
 }
